@@ -1,0 +1,54 @@
+---
+config:
+  layout: elk
+  elk:
+    mergeEdges: true
+    nodePlacementStrategy: LINEAR_SEGMENTS
+---
+%%{init: {'theme':'base','themeVariables':{primaryColor:'#EEEDFE',primaryTextColor:'#3C3489',lineColor:'#94a3b8',secondaryColor:'#f1f5f9',tertiaryColor:'#ffffff',background:'#ffffff',mainBkg:'#f8fafc',nodeBorder:'#7F77DD',clusterBkg:'#f1f5f9',clusterBorder:'#cbd5e1',edgeLabelBackground:'#ffffff',fontSize:'14px'},'flowchart':{'curve':'monotoneY'}}}%%
+flowchart TD
+    subgraph INTAKE["TICKET INTAKE"]
+        direction TB
+        USER["User Request via Email or Board"]
+        INTAKE_C["Intake Clerk: natural language to structured ticket"]
+        QUEUE[("Ticket Queue: OPEN")]
+        USER --> INTAKE_C
+        INTAKE_C --> QUEUE
+    end
+
+    subgraph CREW["THE CREW: BOUNDED ROLES"]
+        direction TB
+        DISPATCH["Central Dispatcher"]
+        SCOUT["SCOUT: research and plan with acceptance criteria"]
+        BUILDER["BUILDER: restricted ReAct developer"]
+        SENTINEL["SENTINEL: code check plus LLM verdict"]
+        DISPATCH --> SCOUT
+        SCOUT --> BUILDER
+        BUILDER --> SENTINEL
+        SENTINEL -->|"PASS"| DONEQ[("DONE")]
+        SENTINEL -->|"FAIL max 2 retries"| BUILDER
+    end
+
+    subgraph SUPPORT["SUPERVISION LAYER"]
+        direction TB
+        WATCH["Watchdog: systemd auto restart"]
+        BOARD[("Live Board: port 8000")]
+        MEMORY[("Lesson Memory")]
+    end
+
+    QUEUE -->|"claim next ticket"| DISPATCH
+    DISPATCH -->|"state updates"| BOARD
+    WATCH -.->|"restart if dead"| DISPATCH
+    MEMORY -.->|"recall lessons"| SCOUT
+
+    linkStyle default stroke:#94a3b8,stroke-width:1.5px
+
+    classDef flow fill:#E6F1FB,stroke:#85B7EB,stroke-width:2px,color:#0C447C,font-weight:bold
+    classDef crew fill:#FAEEDA,stroke:#EF9F27,stroke-width:2px,color:#633806,font-weight:bold
+    classDef store fill:#E1F5EE,stroke:#1D9E75,stroke-width:2px,color:#085041,font-weight:bold
+    classDef support fill:#EEEDFE,stroke:#7F77DD,stroke-width:2px,color:#3C3489,font-weight:bold
+
+    class USER,INTAKE_C flow
+    class DISPATCH,SCOUT,BUILDER,SENTINEL crew
+    class QUEUE,DONEQ store
+    class WATCH,BOARD,MEMORY support

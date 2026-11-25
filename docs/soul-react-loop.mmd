@@ -1,0 +1,33 @@
+---
+config:
+  layout: elk
+  elk:
+    mergeEdges: true
+    nodePlacementStrategy: LINEAR_SEGMENTS
+---
+%%{init: {'theme':'base','themeVariables':{primaryColor:'#EEEDFE',primaryTextColor:'#3C3489',lineColor:'#94a3b8',secondaryColor:'#f1f5f9',tertiaryColor:'#ffffff',background:'#ffffff',mainBkg:'#f8fafc',nodeBorder:'#7F77DD',clusterBkg:'#f1f5f9',clusterBorder:'#cbd5e1',edgeLabelBackground:'#ffffff',fontSize:'14px'},'flowchart':{'curve':'monotoneY'}}}%%
+flowchart TD
+    GOAL["Ticket Goal with Recalled Lessons"]
+    THINK["THOUGHT: reason about next step"]
+    ACT["ACTION: exactly one tool call as JSON"]
+    OBS["OBSERVATION: tool result or error"]
+    GATE["SEND GATE: run paused, human decides"]
+    ANSWER["ANSWER: final result with full trace"]
+
+    GOAL --> THINK
+    THINK --> ACT
+    ACT --> OBS
+    OBS -->|"next step, max 25 calls"| THINK
+    THINK -->|"task complete"| ANSWER
+    ACT -->|"risky action such as sending email"| GATE
+    GATE -->|"approved"| THINK
+
+    linkStyle default stroke:#94a3b8,stroke-width:1.5px
+
+    classDef step fill:#FAEEDA,stroke:#EF9F27,stroke-width:2px,color:#633806,font-weight:bold
+    classDef safe fill:#FBEAF0,stroke:#D4537E,stroke-width:2px,color:#72243E,font-weight:bold
+    classDef done fill:#EAF3DE,stroke:#97C459,stroke-width:2px,color:#27500A,font-weight:bold
+
+    class GOAL,THINK,ACT,OBS step
+    class GATE safe
+    class ANSWER done

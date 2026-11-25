@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+data/
+*.pyc
+# Secrets must NEVER enter the image
+token.json
+credentials.json
+creds.json
+.env

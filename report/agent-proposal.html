@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Proposal — S.O.U.L. Agency: A Ticket-Driven Multi-Agent Workflow System</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#555; --line:#ddd; --bg:#ffffff;
+    --accent:#1a3a5c; --accent-soft:#eef3f8; --warn-bg:#fff8e6; --warn-line:#d9a400;
+    --ok-bg:#eaf6ec; --ok-line:#1d9e75;
+  }
+  *{box-sizing:border-box}
+  body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:var(--bg);
+       max-width:880px;margin:0 auto;padding:48px 28px;line-height:1.75;font-size:16.5px}
+  h1,h2,h3{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.3}
+  h1{font-size:26px;text-align:center;margin-bottom:6px;color:var(--accent)}
+  .subtitle{text-align:center;color:var(--muted);font-size:15.5px;margin-bottom:24px}
+  .titleblock{border:2px solid var(--accent);border-radius:10px;padding:22px 26px;margin-bottom:30px;background:var(--accent-soft)}
+  .titleblock table{width:100%;border-collapse:collapse;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:14.5px}
+  .titleblock td{padding:5px 8px;vertical-align:top}
+  .titleblock td:first-child{font-weight:700;width:170px;color:var(--accent)}
+  .fill{color:#a00;font-weight:700}
+  h2{font-size:20px;color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:6px;margin-top:42px}
+  h3{font-size:16.5px;color:#333;margin-top:26px}
+  p{text-align:justify;margin:12px 0}
+  ul,ol{margin:10px 0;padding-left:26px}
+  li{margin-bottom:7px}
+  table.data{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+  table.data th,table.data td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+  table.data th{background:var(--accent);color:#fff;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+  table.data tr:nth-child(even){background:#f7f9fb}
+  code{font-family:'JetBrains Mono','Cascadia Code',Consolas,monospace;font-size:13.5px;background:#f1f3f5;padding:2px 6px;border-radius:4px}
+  pre{background:#141b26;color:#d6deeb;padding:16px 18px;border-radius:8px;overflow-x:auto;font-size:13px;line-height:1.6}
+  .note{background:var(--warn-bg);border-left:4px solid var(--warn-line);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15px}
+  .ok{background:var(--ok-bg);border-left:4px solid var(--ok-line);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15px}
+  .toc{background:#f7f9fb;border:1px solid var(--line);border-radius:8px;padding:16px 22px;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:14.5px}
+  .toc a{color:var(--accent);text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  .toc ol{margin:6px 0}
+  figure{margin:20px 0;text-align:center}
+  figcaption{font-size:13.5px;color:var(--muted);margin-top:8px;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+  .refs{font-size:14px}
+  .refs li{margin-bottom:9px}
+  footer{margin-top:44px;border-top:1px solid var(--line);padding-top:14px;font-size:13px;color:var(--muted);text-align:center;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+  @media print{
+    body{max-width:100%;padding:0;font-size:12pt}
+    h2{page-break-after:avoid}
+    table.data,figure,pre{page-break-inside:avoid}
+    .toc{display:none}
+  }
+</style>
+</head>
+<body>
+
+<h1>S.O.U.L. Agency: A Ticket-Driven Multi-Agent Workflow System</h1>
+<p class="subtitle">S.O.U.L. — <em>Sacrifice Outweighs Ultimate Leverage.</em> A centralized, verification-gated agency where intake clerks file tickets, a builder crew ships them, and a watchdog protects the machine.</p>
+
+<div class="titleblock">
+<table>
+  <tr><td>Course</td><td>Artificial Intelligence <span class="fill">[course code]</span></td></tr>
+  <tr><td>Submitted by</td><td>Ishtiaq Ahmed, ID 0692320005101035, Dept. of CSE, Notre Dame University Bangladesh</td></tr>
+  <tr><td>Submitted to</td><td><span class="fill">[Instructor name]</span></td></tr>
+  <tr><td>Date</td><td>25 September 2026 (v2 — agency pivot)</td></tr>
+  <tr><td>Type</td><td>Solo project (submission target: 29 September 2026)</td></tr>
+  <tr><td>Live system</td><td><code>~/projects/smart-agent/</code> — Python + FastAPI, zero-cost stack, 284KB of code</td></tr>
+</table>
+</div>
+
+<div class="toc">
+<strong>Contents</strong>
+<ol>
+  <li><a href="#abstract">Abstract</a></li>
+  <li><a href="#intro">Introduction and Motivation</a></li>
+  <li><a href="#lit">Literature Review — Papers and What Each Changed</a></li>
+  <li><a href="#problem">Problem Statement</a></li>
+  <li><a href="#objectives">Objectives</a></li>
+  <li><a href="#system">Proposed System — The Agency</a></li>
+  <li><a href="#peas">PEAS and Agent-Type Mapping (Syllabus L2)</a></li>
+  <li><a href="#multi">The Multi-Agent Position — Centralized and Verified</a></li>
+  <li><a href="#method">Methodology and Timeline</a></li>
+  <li><a href="#collateral">Collaterals — Ingredients, Model, Cost</a></li>
+  <li><a href="#eval">Evaluation Plan</a></li>
+  <li><a href="#wars">Build Log — Failures That Improved the Design</a></li>
+  <li><a href="#deliver">Deliverables</a></li>
+  <li><a href="#refs">References</a></li>
+</ol>
+</div>
+
+<h2 id="abstract">Abstract</h2>
+<p>We present the <strong>S.O.U.L. Agency</strong>, a ticket-driven multi-agent workflow system. Work enters as <strong>tickets</strong> — created manually, or filed automatically by intake clerks that triage Gmail and WhatsApp. A code-driven <strong>dispatcher</strong> (not a chatting model) moves each ticket through a verified pipeline: <strong>Scout</strong> researches and writes a structured plan with checkable acceptance criteria; <strong>Builder</strong> writes real files into a sandboxed workspace using native function calling; <strong>Sentinel</strong> runs deterministic checks plus a criteria-bound verdict and either closes the ticket or routes specific fix notes back (max two rebuilds). A <strong>Watchdog</strong> runs a MAPE-K self-healing loop over the machine and the queue: it scores PC pressure and throttles parallel tickets (2 / 1 / 0), flags stuck tickets, and reports service health. Per-ticket model-call budgets cap token burn. The design is deliberately centralized: agents never free-chat — a direct response to recent failure taxonomies showing 41–87% task-failure rates in open-ended multi-agent frameworks. The full system runs on a student laptop at zero cost and is demonstrated live on a Kanban board.</p>
+
+<h2 id="intro">1. Introduction and Motivation</h2>
+<p>A chatbot answers from its weights; when it does not know, it guesses. An <strong>agent</strong> (Russell &amp; Norvig) perceives an environment and acts on it to achieve goals. A <strong>multi-agent workflow</strong> goes further: specialized agents divide labor — intake, planning, building, review — coordinated through shared, inspectable state. Industry interest is large and measurable (agent markets estimated near USD 7–8B in 2025 with steep forecast growth; orchestration frameworks report tens of millions of monthly installs with named enterprise deployments), and every major AI lab shipped an agent SDK during 2025–2026.</p>
+<p>Our motivation is a working version of a software agency on one laptop: requests arrive from the two channels a student actually lives in (email, WhatsApp), become tickets, get built by a crew, get reviewed, and close — while a watchdog keeps the machine alive. Academically, the system demonstrates PEAS, all classical agent types, environments, planning, verification, and self-healing in one build.</p>
+
+<h2 id="lit">2. Literature Review — Papers and What Each Changed</h2>
+<table class="data">
+  <tr><th>Paper</th><th>Core idea</th><th>What it changed in this build</th></tr>
+  <tr><td>ReAct (Yao et al., ICLR 2023)</td><td>Thought→Action→Observation loop; reason to act, act to reason.</td><td>Core loop of the chat assistant and the fallback Builder protocol.</td></tr>
+  <tr><td>Reflexion (Shinn et al., NeurIPS 2023)</td><td>Actor + Evaluator + verbal self-reflection; 91% HumanEval without weight updates.</td><td>Rebuild loop: Sentinel notes → Builder retry; lessons persisted to memory.</td></tr>
+  <tr><td>Generative Agents (Park et al., UIST 2023)</td><td>Memory scored by relevance + recency + importance; periodic reflection.</td><td>Two-tier memory with scored recall; ablation-ready.</td></tr>
+  <tr><td>Toolformer (Schick et al., NeurIPS 2023)</td><td>Small model + tools beats giant model; model picks tools itself.</td><td>Justifies local/cloud brains with 7+ tools; 120B cloud default, 3B local fallback.</td></tr>
+  <tr><td>MemGPT (Packer et al., 2023)</td><td>OS-style virtual memory: working context paged against archival storage; interrupts.</td><td>Working history + persistent vault; Gmail/WhatsApp arrivals as interrupts.</td></tr>
+  <tr><td>Voyager (Wang et al., 2023)</td><td>Skill library of verified programs, composed into harder skills.</td><td>SKILL.md skill library (open format); reusable chains like morning-brief.</td></tr>
+  <tr><td>HuggingGPT (Shen et al., NeurIPS 2023)</td><td>LLM controller: plan → select → execute → respond.</td><td>Dispatcher stage shape; planner/executor/reviewer decomposition.</td></tr>
+  <tr><td><strong>MetaGPT</strong> (Hong et al., ICLR 2024) — "Code = SOP(Team)"</td><td>Software-company assembly line with SOPs; roles with bounded tools; handoffs as structured documents; executable feedback (+4–5%).</td><td><strong>Validates the agency.</strong> Ticket artifacts are structured docs; dispatcher flow is an SOP; tickets file is the message pool. Scout plan schema adopted verbatim in spirit.</td></tr>
+  <tr><td><strong>ChatDev</strong> (Qian et al., ACL 2024)</td><td>Chat chain across design→code→test; communicative de-hallucination (ask specifics before answering).</td><td>FAIL notes must cite file:line + expected-vs-actual. Free-form agent dialogue deliberately NOT adopted (see §7).</td></tr>
+  <tr><td><strong>Agentless</strong> (Xia et al., FSE 2025)</td><td>Fixed localize→repair→validate pipeline, LLM never decides next actions; 32% SWE-bench Lite at $0.70, adopted by OpenAI.</td><td><strong>Validates the dispatcher.</strong> Code decides, models execute bounded steps. Inspired criteria-as-tests verification.</td></tr>
+  <tr><td><strong>ReWOO</strong> (Xu et al., 2023)</td><td>Planner→Worker→Solver decoupled; 5× token efficiency, +4% accuracy, survives tool failure.</td><td>Scout plans fully upfront; observation truncation; graceful degradation when tools fail.</td></tr>
+  <tr><td>SWE-bench (Jimenez et al., 2024)</td><td>GitHub issues → patches → FAIL_TO_PASS tests.</td><td>Tickets framed as issues; acceptance criteria as tests; eval as mini-SWE-bench.</td></tr>
+  <tr><td>MAPE-K (Kephart &amp; Chess; author's prior Aegis work)</td><td>Monitor→Analyze→Plan→Execute over Knowledge for self-healing.</td><td><strong>The Watchdog.</strong> Pressure scoring, adaptive parallelism, stuck-ticket flags.</td></tr>
+</table>
+<p>Industry practice (JavaScript Mastery, "The Engineering System for AI Agents," 2026; MIT skill set <code>jsmastery-pro/skills</code>) independently converges on file-based state, SKILL.md skills, cross-model review, and stop-and-ask gates — all adopted.</p>
+
+<h2 id="problem">3. Problem Statement</h2>
+<p>Student work arrives fragmented across email and chat, gets built (if at all) in one unreviewed pass, and dies on overloaded laptops with no record. The problem is to build a <strong>rational multi-agent system</strong> that (i) converts inbox/chat noise into tracked tickets, (ii) plans, builds, and reviews each ticket with verification gates, (iii) protects the host machine via load-adaptive scheduling, and (iv) keeps every decision inspectable — all on student hardware at zero recurring cost.</p>
+
+<h2 id="objectives">4. Objectives</h2>
+<ol>
+  <li>Ticket store with a dispatcher-enforced lifecycle: OPEN → PLANNED → BUILDING → REVIEWING → DONE (or FAILED with reasons kept).</li>
+  <li>Intake clerks that triage Gmail/WhatsApp into tickets with dedupe and caps.</li>
+  <li>Scout (structured plan + acceptance criteria), Builder (sandboxed file writes via native function calling), Sentinel (deterministic checks + criteria-bound verdict).</li>
+  <li>Watchdog MAPE-K loop: pressure score, adaptive parallelism (2/1/0), stuck-ticket flags, service health.</li>
+  <li>Per-ticket model-call budgets; send-gates on all outward actions; Kanban board UI.</li>
+  <li>Evaluation: fresh build tickets + ablations + honest failure log.</li>
+</ol>
+
+<h2 id="system">5. Proposed System — The Agency</h2>
+<h3>5.1 Ticket lifecycle (dispatcher-enforced)</h3>
+<pre>OPEN → PLANNED → BUILDING → REVIEWING → DONE ✅
+                ↑              |
+                |              +-- FAIL notes (max 2 rebuilds)
+                |                       |
+                +-----------------------+-- still failing → FAILED ❌ (reasons kept)</pre>
+<h3>5.2 Agent roster</h3>
+<table class="data">
+  <tr><th>Agent</th><th>Brain mode</th><th>Tools</th><th>Output</th></tr>
+  <tr><td><strong>Dispatcher</strong> (plain code, zero hallucinations)</td><td>state machine + health-gated queue</td><td>ticket store only</td><td>transitions, retries, budget enforcement</td></tr>
+  <tr><td><strong>Intake clerks</strong></td><td>poll + LLM triage (task? yes/no + title)</td><td>gmail_search, wa_chats/read</td><td>new OPEN tickets (deduped, capped)</td></tr>
+  <tr><td><strong>Scout</strong></td><td>single call (ReWOO-style upfront plan)</td><td>reasoning only</td><td>plan + 3–6 checkable acceptance criteria</td></tr>
+  <tr><td><strong>Builder</strong></td><td>ReAct loop, ≤8 steps, native function calls</td><td>workspace_write/read/list, web_fetch, calculator — sandbox-confined, no shell, no sends</td><td>real files under <code>workspace/T-XXX/</code></td></tr>
+  <tr><td><strong>Sentinel</strong></td><td>deterministic checks + one verdict call, grounded in file contents</td><td>code_check (syntax, secrets, hygiene)</td><td>PASS, or FAIL with file:line + expected-vs-actual notes</td></tr>
+  <tr><td><strong>Watchdog</strong></td><td>MAPE-K loop on a timer</td><td>health sensors, ticket store</td><td>pressure score, parallelism advice, stuck flags, health log</td></tr>
+</table>
+<figure>
+<svg width="100%" viewBox="0 0 760 430" font-family="Arial,sans-serif" font-size="12.5">
+  <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6" fill="none" stroke="#1a3a5c" stroke-width="1.4"/></marker></defs>
+  <rect x="30" y="20" width="200" height="52" rx="8" fill="#e6f1fb" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="130" y="41" text-anchor="middle" font-weight="bold" fill="#0c447c">INTAKE CLERKS</text>
+  <text x="130" y="57" text-anchor="middle" fill="#555">gmail + whatsapp → tickets</text>
+  <rect x="280" y="20" width="200" height="52" rx="8" fill="#eeedfe" stroke="#7f77dd" stroke-width="2"/>
+  <text x="380" y="41" text-anchor="middle" font-weight="bold" fill="#3c3489">TICKET QUEUE</text>
+  <text x="380" y="57" text-anchor="middle" fill="#555">OPEN → … → DONE</text>
+  <rect x="530" y="20" width="200" height="52" rx="8" fill="#eaf3de" stroke="#6a9a2e" stroke-width="2"/>
+  <text x="630" y="41" text-anchor="middle" font-weight="bold" fill="#27500a">WATCHDOG (MAPE-K)</text>
+  <text x="630" y="57" text-anchor="middle" fill="#555">pressure → parallelism 2/1/0</text>
+  <rect x="60" y="130" width="180" height="52" rx="8" fill="#faeeda" stroke="#b9770e" stroke-width="2"/>
+  <text x="150" y="151" text-anchor="middle" font-weight="bold" fill="#633806">SCOUT</text>
+  <text x="150" y="167" text-anchor="middle" fill="#555">plan + criteria</text>
+  <rect x="290" y="130" width="180" height="52" rx="8" fill="#faeeda" stroke="#b9770e" stroke-width="2"/>
+  <text x="380" y="151" text-anchor="middle" font-weight="bold" fill="#633806">BUILDER</text>
+  <text x="380" y="167" text-anchor="middle" fill="#555">sandboxed files</text>
+  <rect x="520" y="130" width="180" height="52" rx="8" fill="#fbeaf0" stroke="#d4537e" stroke-width="2"/>
+  <text x="610" y="151" text-anchor="middle" font-weight="bold" fill="#72243e">SENTINEL</text>
+  <text x="610" y="167" text-anchor="middle" fill="#555">checks + verdict</text>
+  <rect x="230" y="240" width="300" height="52" rx="8" fill="#eef3f8" stroke="#1a3a5c" stroke-width="2"/>
+  <text x="380" y="261" text-anchor="middle" font-weight="bold" fill="#1a3a5c">DISPATCHER (code, not LLM)</text>
+  <text x="380" y="277" text-anchor="middle" fill="#555">states · retries · budgets</text>
+  <rect x="230" y="330" width="300" height="52" rx="8" fill="#f7f9fb" stroke="#94a3b8" stroke-width="2"/>
+  <text x="380" y="351" text-anchor="middle" font-weight="bold" fill="#334155">KANBAN BOARD + CHAT UI</text>
+  <text x="380" y="367" text-anchor="middle" fill="#555">:8000/board · :8000/</text>
+  <line x1="230" y1="46" x2="280" y2="46" stroke="#1a3a5c" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <line x1="480" y1="46" x2="530" y2="46" stroke="#1a3a5c" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <line x1="630" y1="72" x2="630" y2="200" stroke="#1a3a5c" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="630" y1="200" x2="380" y2="200" stroke="#1a3a5c" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="240" y1="156" x2="290" y2="156" stroke="#1a3a5c" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <line x1="470" y1="156" x2="520" y2="156" stroke="#1a3a5c" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <line x1="660" y1="182" x2="660" y2="240" stroke="#1a3a5c" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <line x1="610" y1="240" x2="380" y2="240" stroke="#1a3a5c" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <line x1="300" y1="156" x2="230" y2="240" stroke="#d4537e" stroke-width="1.5" marker-end="url(#ar2)"/>
+  <text x="240" y="210" fill="#72243e" font-size="11">FAIL notes back</text>
+</svg>
+<figcaption>Fig. 1 — Agency architecture. Solid = ticket flow; dashed = watchdog control. Agents never message each other — all handoffs are ticket artifacts moved by the dispatcher.</figcaption>
+</figure>
+<h3>5.3 Safety box</h3>
+<p>Builder writes are confined to <code>workspace/</code> in code (absolute paths and <code>../</code> rejected); no shell execution, no sends, no deletes — worst case is an ugly file in a sandbox. Outward sends anywhere stop for human approval. Secrets are never baked into images (<code>.dockerignore</code> + runtime env).</p>
+
+<h2 id="peas">6. PEAS and Agent-Type Mapping (Syllabus L2)</h2>
+<table class="data">
+  <tr><th>Role</th><th>Performance</th><th>Environment</th><th>Actuators</th><th>Sensors</th></tr>
+  <tr><td>Intake</td><td>precision of task detection; zero spam-tickets</td><td>inbox + chats (dynamic, partially observable)</td><td>create ticket</td><td>mail/chat text</td></tr>
+  <tr><td>Scout</td><td>criteria checkability</td><td>ticket + web/notes</td><td>write plan artifact</td><td>research results</td></tr>
+  <tr><td>Builder</td><td>criteria met per model-call</td><td>workspace sandbox (static, fully observable)</td><td>write/read files</td><td>tool observations</td></tr>
+  <tr><td>Sentinel</td><td>verdict correctness; false-PASS = 0</td><td>workspace files</td><td>verdict + notes</td><td>check reports, file contents</td></tr>
+  <tr><td>Watchdog</td><td>no overload incidents; stuck detected &lt;1 cycle</td><td>PC + queue (dynamic)</td><td>throttle, flags, health log</td><td>CPU/RAM/load, ticket ages</td></tr>
+</table>
+<p>Coverage: simple-reflex (gates, hygiene rules), model-based (message state, memory stream), goal-based (planner, ticket goals), utility-based (step caps, budgets, parallelism trade-offs), learning (Reflexion notes, skill library, watchdog adaptation).</p>
+
+<h2 id="multi">7. The Multi-Agent Position — Centralized and Verified</h2>
+<p>Multi-agent systems are booming (fastest-growing agent-market segment; tens of millions of framework installs; an agent SDK from every major lab) — but booming ≠ better by default. A NeurIPS 2025 failure taxonomy measured 41–87% task-failure rates across open multi-agent frameworks; controlled studies show the multi-agent edge shrinking 10%→3% as base models improve at 4–220× token cost, debate sycophancy near 85%, and single-agent wins once baselines pass ~45%. Our position: <strong>centralized dispatcher, structured artifacts, verified handoffs, no free agent dialogue</strong> — the configuration the literature identifies as containing error amplification (~4× vs ~17× unverified). The agency's own comparison runs (single vs pipeline) test this claim directly.</p>
+
+<h2 id="method">8. Methodology and Timeline</h2>
+<table class="data">
+  <tr><th>Phase</th><th>Dates (Sep 2026)</th><th>Work — status</th></tr>
+  <tr><td>0 — Proposal v1</td><td>25</td><td>Single-assistant proposal — <strong>done, then pivoted</strong></td></tr>
+  <tr><td>1 — Agency core</td><td>25</td><td>Tickets, Scout/Builder/Sentinel, dispatcher, watchdog, board — <strong>done, 2/2 pilot tickets DONE</strong></td></tr>
+  <tr><td>2 — Intake + hardening</td><td>25–26</td><td>Clerks live; native function-calling Builder; criteria-bound Sentinel — <strong>done</strong></td></tr>
+  <tr><td>3 — Evaluation</td><td>26–28</td><td>Fresh build tickets, ablations (criteria on/off, native vs text protocol), metrics table</td></tr>
+  <tr><td>4 — Report + demo</td><td>29</td><td>Final report, Kanban live demo, submission</td></tr>
+</table>
+<p><strong>Stack (all zero-cost):</strong> Python 3.12 + FastAPI, Ollama (<code>gpt-oss:120b-cloud</code> default, <code>llama3.2:3b</code> offline fallback, one env var), existing Gmail/WhatsApp integrations, numpy-free stdlib health sensors, Docker-ready (Dockerfile + .dockerignore from day one).</p>
+
+<h2 id="collateral">9. Collaterals — Ingredients, Model, Cost</h2>
+<table class="data">
+  <tr><th>Ingredient</th><th>Status</th><th>Cost</th></tr>
+  <tr><td>Brain: gpt-oss:120b-cloud (0 local RAM) + llama3.2:3b offline fallback</td><td>live + installed</td><td>$0</td></tr>
+  <tr><td>Runtime: Python 3.12, FastAPI, uvicorn, requests, Node 22</td><td>installed</td><td>$0</td></tr>
+  <tr><td>Gmail pipe (API + token) / WhatsApp daemon</td><td>working / alive, needs re-pair</td><td>$0</td></tr>
+  <tr><td>Notes/RAG (vault + nomic-embed-text)</td><td>present</td><td>$0</td></tr>
+  <tr><td>Agency code (284KB), Dockerfile, skills</td><td>built</td><td>$0</td></tr>
+  <tr><td>Shipping: Docker 29.8, 354GB free; Render/cloud keys as fallback</td><td>ready</td><td>$0</td></tr>
+</table>
+<p><strong>Total: $0.</strong> Real constraints are non-monetary: internet (cloud brain + comms), free-tier rate limits (eval paced, per-ticket budgets enforced), and 13GB RAM shared with desktop apps (watchdog throttles the agency before it ever matters).</p>
+
+<h2 id="eval">10. Evaluation Plan</h2>
+<ol>
+  <li><strong>Build tasks (fresh tickets):</strong> small utilities + one-pagers of graded difficulty; each with Scout-written acceptance criteria.</li>
+  <li><strong>Metrics per ticket:</strong> outcome (DONE/FAILED), model calls, wall time, rebuild rounds, load before/after.</li>
+  <li><strong>Ablations:</strong> criteria-bound vs free-judgment Sentinel; native vs text-protocol Builder; single pass vs review pipeline.</li>
+  <li><strong>Artefacts:</strong> ticket histories as transcripts; one full Thought→Action→Observation trace; failure log with fixes.</li>
+  <li><strong>Guardrail tests:</strong> send-permission probes (must pause), path-escape writes (must refuse), secret-planted code (must flag).</li>
+</ol>
+
+<h2 id="wars">11. Build Log — Failures That Improved the Design</h2>
+<ol>
+  <li><strong>Parser rejected its own roles</strong> (Scout/Sentinel JSON "unparseable") → accept any dict, validate keys per role.</li>
+  <li><strong>Sentinel judged without evidence</strong> → RCI-style grounding: file contents fed to the judge.</li>
+  <li><strong>Hygiene checker vs the todo app</strong> (flagged "TODO" inside a todo app) → placeholders count only in code comments.</li>
+  <li><strong>Text-protocol writes break on file payloads</strong> (unescaped quotes killed JSON 3×) → <strong>native function calling for Builder</strong>: payloads as typed args. Prompt-protocol for chat, native tools for builders — an architecture finding.</li>
+  <li><strong>Shell killed by its own pkill pattern</strong> (ops lesson) → PID-file process management; never match your own command text.</li>
+</ol>
+
+<h2 id="deliver">12. Deliverables</h2>
+<ol>
+  <li>Working agency (<code>~/projects/smart-agent/</code>): dispatcher, 5 roles, board + chat UI, Dockerfile.</li>
+  <li>Skill library (SKILL.md), memory snapshots, ticket histories.</li>
+  <li>Final report with PEAS, architecture, eval tables, traces, honest limitations.</li>
+  <li>Live demo: file a ticket → watch Scout→Builder→Sentinel close it on the Kanban board.</li>
+</ol>
+
+<h2 id="refs">References</h2>
+<ol class="refs">
+  <li>S. Yao et al., "ReAct: Synergizing Reasoning and Acting in Language Models," ICLR 2023.</li>
+  <li>N. Shinn et al., "Reflexion: Language Agents with Verbal Reinforcement Learning," NeurIPS 2023.</li>
+  <li>J. S. Park et al., "Generative Agents: Interactive Simulacra of Human Behavior," UIST 2023.</li>
+  <li>T. Schick et al., "Toolformer: Language Models Can Teach Themselves to Use Tools," NeurIPS 2023.</li>
+  <li>C. Packer et al., "MemGPT: Towards LLMs as Operating Systems," arXiv:2310.08560, 2023.</li>
+  <li>G. Wang et al., "Voyager: An Open-Ended Embodied Agent with Large Language Models," arXiv:2305.16291, 2023.</li>
+  <li>Y. Shen et al., "HuggingGPT: Solving AI Tasks with ChatGPT and its Friends in Hugging Face," NeurIPS 2023.</li>
+  <li>S. Hong et al., "MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework," ICLR 2024.</li>
+  <li>C. Qian et al., "ChatDev: Communicative Agents for Software Development," ACL 2024.</li>
+  <li>C. S. Xia et al., "Agentless: Demystifying LLM-based Software Engineering Agents," FSE 2025.</li>
+  <li>B. Xu et al., "ReWOO: Decoupling Reasoning from Observations for Efficient Augmented Language Models," arXiv:2305.18323, 2023.</li>
+  <li>C. Jimenez et al., "SWE-bench: Can Language Models Resolve Real-world Github Issues?" ICLR 2024.</li>
+  <li>J. Kephart and D. Chess, "The Vision of Autonomic Computing," IEEE Computer, 2003 (MAPE-K).</li>
+  <li>"Why Do Multi-Agent LLM Systems Fail?" (MAST failure taxonomy), NeurIPS 2025.</li>
+  <li>"Single-agent or Multi-agent Systems? Why Not Both?" (hybrid cascade), arXiv:2505.18286, 2025.</li>
+  <li>"Towards a Science of Scaling Agent Systems" (capability-saturation threshold), Nature, 2026.</li>
+  <li>S. Russell and P. Norvig, <em>Artificial Intelligence: A Modern Approach</em>, 4th ed., Ch. 2.</li>
+  <li>JavaScript Mastery, "The Engineering System for AI Agents" + <code>jsmastery-pro/skills</code>, MIT, 2026.</li>
+  <li>P. Garg, "Build AI Agent from Scratch" (start→plan→action→observe) + <code>genai-cohort/weather_agent.py</code>, 2026.</li>
+</ol>
+
+<footer>Proposal v2.0 (agency pivot) — 25 Sep 2026 — S.O.U.L. Agency — fill the two <span class="fill">red fields</span> before printing.</footer>
+
+</body>
+</html>

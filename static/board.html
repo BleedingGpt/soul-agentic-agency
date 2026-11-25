@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.O.U.L. Agency — Ticket Board</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,'Segoe UI',Roboto,Inter,Arial,sans-serif;background:#0b0e17;color:#e8ecf4;
+       min-height:100vh;padding:20px 16px}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;
+    background:radial-gradient(700px 320px at 15% -5%,rgba(127,119,221,.22),transparent 60%),
+               radial-gradient(700px 320px at 85% 0%,rgba(29,158,117,.16),transparent 60%),#0b0e17}
+  .wrap{max-width:1400px;margin:0 auto}
+  header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .orb{width:38px;height:38px;border-radius:50%;flex:none;
+    background:conic-gradient(from 40deg,#7f77dd,#1d9e75,#e9c46a,#d4537e,#7f77dd);
+    box-shadow:0 0 22px rgba(127,119,221,.55)}
+  h1{font-size:19px} h1 small{display:block;font-size:11.5px;font-weight:400;color:#9aa4bd}
+  nav{margin-left:auto;display:flex;gap:8px}
+  nav a{color:#9aa4bd;text-decoration:none;font-size:13px;border:1px solid rgba(255,255,255,.14);
+        border-radius:8px;padding:7px 14px}
+  nav a:hover{color:#fff;border-color:#7f77dd}
+  #strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:12.5px}
+  .pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:5px 13px;color:#9aa4bd}
+  .pill b{color:#e9c46a}
+  #controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  #controls input,#controls select{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;color:#e8ecf4;padding:9px 12px;font-size:13.5px}
+  #title{flex:2;min-width:200px} #desc{flex:3;min-width:200px}
+  button{background:linear-gradient(135deg,#3c3489,#7f77dd);border:none;color:#fff;border-radius:9px;
+         padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer}
+  button.ghost{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+  button:disabled{opacity:.5;cursor:wait}
+  #board{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  @media(max-width:1100px){#board{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:700px){#board{grid-template-columns:repeat(2,1fr)}}
+  .col{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);border-radius:12px;
+       padding:10px;min-height:180px}
+  .col h2{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#9aa4bd;margin-bottom:8px;
+          display:flex;justify-content:space-between}
+  .col h2 span{background:rgba(255,255,255,.1);border-radius:10px;padding:0 8px}
+  .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;
+        padding:9px 10px;margin-bottom:8px;font-size:13px;cursor:pointer}
+  .card:hover{border-color:#7f77dd}
+  .card .id{font-size:11px;color:#e9c46a;font-weight:700}
+  .card .src{font-size:11px;color:#9aa4bd}
+  .card details{margin-top:6px;font-size:12px;color:#c4cbdd}
+  .card details summary{cursor:pointer;color:#9aa4bd;font-size:11.5px}
+  .card li{margin:3px 0 3px 16px}
+  .DONE{border-left:3px solid #1d9e75}.FAILED{border-left:3px solid #ff5d5d}
+  .BUILDING,.REVIEWING{border-left:3px solid #e9c46a}.PLANNED{border-left:3px solid #7f77dd}
+  footer{margin-top:12px;font-size:12px;color:#6b7690;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="orb"></div>
+    <h1>S.O.U.L. AGENCY<small>TICKET BOARD · intake → crew → sentinel → done</small></h1>
+    <nav><a href="/">Chat</a><a href="/report/agent-proposal.html">Proposal</a></nav>
+  </header>
+  <div id="strip"><span class="pill">loading…</span></div>
+  <div id="controls">
+    <input id="title" placeholder="Ticket title — e.g. Build a portfolio site for Nadim">
+    <input id="desc" placeholder="Details (optional)">
+    <button id="add">+ Ticket</button>
+    <button id="run" class="ghost">▶ Run queue</button>
+    <button id="intake" class="ghost">📥 Intake scan</button>
+  </div>
+  <div id="board"></div>
+  <footer>Dispatcher-enforced lifecycle · sends stop and ask · auto-refresh 10s</footer>
+</div>
+<script>
+const board=document.getElementById('board'),strip=document.getElementById('strip');
+const COLS=['OPEN','PLANNED','BUILDING','REVIEWING','DONE','FAILED'];
+async function refresh(){
+  const [ts,h]=await Promise.all([
+    fetch('/api/tickets').then(r=>r.json()),
+    fetch('/api/health-full').then(r=>r.json()).catch(()=>null)]);
+  if(h)strip.innerHTML=
+    '<span class="pill">pressure <b>'+h.pressure+'</b></span>'+
+    '<span class="pill">parallel <b>'+h.recommended_parallel+'</b></span>'+
+    '<span class="pill">queue open <b>'+h.queue.open+'</b> active <b>'+h.queue.active.length+'</b>'+
+    (h.queue.stuck.length?' stuck <b>'+h.queue.stuck+'</b>':'')+'</span>'+
+    '<span class="pill">ollama '+(h.services.ollama?'<b>up</b>':'down')+'</span>'+
+    '<span class="pill">whatsapp '+(h.services.whatsapp==='connected'?'<b>up</b>':'down')+'</span>'+
+    (h.actions.length?'<span class="pill">⚠ '+h.actions.join(' · ')+'</span>':'');
+  board.innerHTML='';
+  COLS.forEach(c=>{
+    const col=document.createElement('div');col.className='col';
+    const items=ts.filter(t=>t.status===c);
+    col.innerHTML='<h2>'+c+'<span>'+items.length+'</span></h2>';
+    items.forEach(t=>{
+      const d=document.createElement('div');d.className='card '+c;
+      d.innerHTML='<div class="id">'+t.id+'</div><div>'+escapeHtml(t.title)+'</div>'+
+        '<div class="src">'+t.source+' · '+t.updated+'</div>'+
+        '<details><summary>history ('+t.history.length+')</summary><ul>'+
+        t.history.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul></details>';
+      col.appendChild(d);
+    });
+    board.appendChild(col);
+  });
+}
+function escapeHtml(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+document.getElementById('add').onclick=async()=>{
+  const title=document.getElementById('title').value.trim();if(!title)return;
+  await fetch('/api/tickets',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({title,description:document.getElementById('desc').value})});
+  document.getElementById('title').value='';document.getElementById('desc').value='';refresh();};
+document.getElementById('run').onclick=async e=>{e.target.disabled=true;
+  await fetch('/api/tickets/run',{method:'POST'});e.target.disabled=false;refresh();};
+document.getElementById('intake').onclick=async e=>{e.target.disabled=true;
+  const r=await fetch('/api/intake/run',{method:'POST'}).then(r=>r.json());
+  alert('Intake: '+r.created.length+' ticket(s) — '+r.created.join(', '));e.target.disabled=false;refresh();};
+refresh();setInterval(refresh,10000);
+</script>
+</body>
+</html>
